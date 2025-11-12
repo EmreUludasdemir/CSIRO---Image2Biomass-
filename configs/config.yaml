@@ -1,0 +1,104 @@
+# CSIRO Image2Biomass Competition Configuration
+
+# Data Settings
+data:
+  data_dir: "./data"
+  train_csv: "train.csv"
+  test_csv: "test.csv"
+  image_dir: "images"
+  img_size: 512
+  n_folds: 5
+  seed: 42
+
+# Model Settings
+model:
+  # Available: efficientnet_b3, efficientnet_b4, convnext_base, swin_transformer_base
+  architectures:
+    - efficientnet_b3
+    - convnext_base
+    - swin_transformer_base
+  pretrained: true
+  num_classes: 1  # Regression task
+  dropout: 0.3
+
+  # Multi-modal settings
+  use_ndvi: true
+  use_metadata: true
+  metadata_features:
+    - season
+    - region
+    - plant_height
+    - species_diversity
+
+# Training Settings
+training:
+  batch_size: 16
+  num_epochs: 50
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  scheduler: "CosineAnnealingLR"
+  warmup_epochs: 3
+  gradient_clip: 1.0
+  mixed_precision: true
+  accumulation_steps: 2
+
+  # Early stopping
+  patience: 10
+  min_delta: 0.001
+
+  # Loss function
+  loss_fn: "smooth_l1"  # Options: mse, mae, smooth_l1, huber
+
+# Augmentation Settings
+augmentation:
+  train:
+    horizontal_flip: 0.5
+    vertical_flip: 0.5
+    rotate_limit: 45
+    brightness_limit: 0.2
+    contrast_limit: 0.2
+    saturation_shift_limit: 0.2
+    hue_shift_limit: 0.1
+    blur_limit: 3
+    gaussian_noise: 0.02
+    cutout:
+      num_holes: 8
+      max_h_size: 32
+      max_w_size: 32
+      fill_value: 0
+      p: 0.5
+    mixup_alpha: 0.2
+    cutmix_alpha: 1.0
+
+  test:
+    # Test time augmentation
+    tta_transforms: 5
+
+# Validation Settings
+validation:
+  strategy: "stratified_kfold"  # Options: kfold, stratified_kfold, group_kfold
+  metric: "rmse"  # Primary metric
+  additional_metrics:
+    - mae
+    - r2
+    - mape
+
+# Inference Settings
+inference:
+  use_tta: true
+  tta_merge_mode: "mean"  # Options: mean, median, gmean
+  batch_size: 32
+  ensemble_weights: "auto"  # Options: auto, equal, or list of weights
+
+# Logging Settings
+logging:
+  use_wandb: true
+  project_name: "csiro-image2biomass"
+  experiment_name: "multi_modal_ensemble"
+  save_dir: "./logs"
+
+# Paths
+paths:
+  checkpoint_dir: "./models/checkpoints"
+  best_model_dir: "./models/weights"
+  submission_dir: "./submissions"

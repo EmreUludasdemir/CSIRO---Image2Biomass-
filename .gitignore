@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Data
+data/raw/*
+data/processed/*
+data/external/*
+!data/.gitkeep
+*.csv
+*.parquet
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+
+# Models
+models/checkpoints/*
+models/weights/*
+!models/.gitkeep
+*.pth
+*.pt
+*.ckpt
+*.onnx
+
+# Notebooks
+.ipynb_checkpoints/
+notebooks/*.ipynb
+
+# Logs
+logs/
+*.log
+wandb/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+
+# Submissions
+submissions/*.csv
+!submissions/sample_submission.csv
